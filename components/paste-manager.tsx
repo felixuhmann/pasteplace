@@ -41,7 +41,7 @@ function DeleteButton({ id }: { id: number }) {
     <Button
       variant="ghost"
       size="icon"
-      className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+      className="h-8 w-8 text-red-500 hover:text-red-700 bg-white/90 hover:bg-red-50 backdrop-blur-sm shadow-sm"
       title="Delete"
       disabled={pending}
     >
@@ -132,10 +132,19 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
         ) : (
           optimisticPastes.map((paste) => (
             <Card key={paste.id} className="overflow-hidden">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start gap-4">
+              <CardContent className="p-4 relative">
+                <div className="absolute top-2 right-2 flex gap-1 z-10">
+                  <CopyButton content={paste.content} />
+                  <form action={handleDelete}>
+                    <input type="hidden" name="id" value={paste.id} />
+                    <DeleteButton id={paste.id} />
+                  </form>
+                </div>
+                
+
+                <div>
                   {paste.mode === "markdown" ? (
-                    <div className="prose prose-sm max-w-none flex-1 overflow-hidden break-words">
+                    <div className="prose prose-sm max-w-none overflow-hidden break-words">
                       <ReactMarkdown 
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -155,18 +164,12 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
                       </ReactMarkdown>
                     </div>
                   ) : (
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 flex-1 break-words overflow-x-auto">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 break-words overflow-x-auto">
                       {paste.content}
                     </pre>
                   )}
-                  <div className="flex gap-2">
-                    <CopyButton content={paste.content} />
-                    <form action={handleDelete}>
-                      <input type="hidden" name="id" value={paste.id} />
-                      <DeleteButton id={paste.id} />
-                    </form>
-                  </div>
                 </div>
+                
                 <div className="mt-2 text-xs text-gray-400">
                   {new Date(paste.createdAt).toLocaleString()}
                 </div>
