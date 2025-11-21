@@ -135,13 +135,27 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-4">
                   {paste.mode === "markdown" ? (
-                    <div className="prose max-w-none">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <div className="prose prose-sm max-w-none flex-1 overflow-hidden break-words">
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          pre: ({ children }) => (
+                            <pre className="whitespace-pre-wrap break-words overflow-x-auto">
+                              {children}
+                            </pre>
+                          ),
+                          code: ({ children }) => (
+                            <code className="break-words">
+                              {children}
+                            </code>
+                          ),
+                        }}
+                      >
                         {paste.content}
                       </ReactMarkdown>
                     </div>
                   ) : (
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 flex-1">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 flex-1 break-words overflow-x-auto">
                       {paste.content}
                     </pre>
                   )}
