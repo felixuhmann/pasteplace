@@ -10,6 +10,10 @@ import { useFormStatus } from "react-dom";
 import { Paste } from "@/db/schema";
 import { DeleteAllButton } from "./delete-all-button";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+
 type PasteManagerProps = {
   initialPastes: Paste[];
 };
@@ -53,10 +57,8 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
       if (newPaste === "CLEAR") {
         return [];
       } else if (typeof newPaste === "number") {
-        // Delete
         return state.filter((p) => p.id !== newPaste);
       } else {
-        // Add
         return [newPaste, ...state];
       }
     }
@@ -64,11 +66,13 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
 
   async function handleAdd(formData: FormData) {
     const content = formData.get("content") as string;
+    const mode = (formData.get("mode") as string) ?? "plaintext";
     if (!content) return;
 
     const newPaste: Paste = {
       id: Math.random(), // Temporary ID
       content,
+      mode: mode as any,
       createdAt: new Date().toISOString(),
     };
 
@@ -97,8 +101,19 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
               className="min-h-[150px] font-mono"
               required
             />
+            <div className="flex items-center gap-4 justify-between">
+              <Select name="mode" defaultValue="plaintext">
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select mode" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="plaintext">Plain Text</SelectItem>
+                <SelectItem value="markdown">Markdown</SelectItem>
+              </SelectContent>
+            </Select>
             <div className="flex justify-end">
               <SubmitButton />
+            </div>
             </div>
           </form>
         </CardContent>
@@ -118,9 +133,17 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
             <Card key={paste.id} className="overflow-hidden">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-4">
-                  <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 flex-1">
-                    {paste.content}
-                  </pre>
+                  {paste.mode === "markdown" ? (
+                    <div className="prose max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {paste.content}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700 flex-1">
+                      {paste.content}
+                    </pre>
+                  )}
                   <form action={handleDelete}>
                     <input type="hidden" name="id" value={paste.id} />
                     <DeleteButton id={paste.id} />

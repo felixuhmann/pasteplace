@@ -9,12 +9,14 @@ import { redirect } from "next/navigation";
 
 export async function addPaste(formData: FormData) {
   const content = formData.get("content") as string;
+  const mode = (formData.get("mode") as string) ?? "plaintext";
   if (!content || content.trim() === "") {
     return;
   }
 
   await db.insert(pastes).values({
     content: content,
+    mode: mode,
   });
 
   revalidatePath("/");
