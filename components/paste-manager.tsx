@@ -9,6 +9,7 @@ import { Trash2, Loader2 } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Paste } from "@/db/schema";
 import { DeleteAllButton } from "./delete-all-button";
+import { CopyButton } from "./copy-button";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -144,10 +145,13 @@ export function PasteManager({ initialPastes }: PasteManagerProps) {
                       {paste.content}
                     </pre>
                   )}
-                  <form action={handleDelete}>
-                    <input type="hidden" name="id" value={paste.id} />
-                    <DeleteButton id={paste.id} />
-                  </form>
+                  <div className="flex gap-2">
+                    <CopyButton content={paste.content} />
+                    <form action={handleDelete}>
+                      <input type="hidden" name="id" value={paste.id} />
+                      <DeleteButton id={paste.id} />
+                    </form>
+                  </div>
                 </div>
                 <div className="mt-2 text-xs text-gray-400">
                   {new Date(paste.createdAt).toLocaleString()}
