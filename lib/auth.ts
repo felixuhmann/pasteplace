@@ -29,7 +29,7 @@ export async function verifySession(token: string) {
 }
 
 export async function login(password: string) {
-  const correctPassword = process.env.PASTEPLACE_PASSWORD || "secret";
+  const correctPassword = process.env.PASTEPLACE_PASSWORD;
   if (password !== correctPassword) {
     return false;
   }
