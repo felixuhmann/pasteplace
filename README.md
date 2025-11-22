@@ -1,5 +1,8 @@
 # Pasteplace
 
+<img width="2581" height="2016" alt="image" src="https://github.com/user-attachments/assets/ae0d63de-d263-496f-bf43-9f907c2d4ba0" />
+
+
 A modern **Next.js** application for storing and sharing text snippets securely. Built with **TailwindCSS**, **Shadcn UI**, and **Turso/LibSQL** for persistent storage.
 
 ## Features
